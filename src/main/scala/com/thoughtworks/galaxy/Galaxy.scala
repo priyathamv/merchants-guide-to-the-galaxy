@@ -1,117 +1,102 @@
-import scala.util.control.Breaks._
+package com.thoughtworks.galaxy
 
 /**
-  * Galaxy where
-  *
-  * all the conditions are explained where required
+  * Galaxy class has methods to map alien values
+  * to roman values, decrypting alien values to
+  * decimal values and required utils!
   */
 class Galaxy {
 
-  /** returns Arabic value of the given Roman value */
-  def romanValue(str: Char): Int =
-    str match {
-      case 'I'  => 1
-      case 'V'  => 5
-      case 'X'  => 10
-      case 'L'  => 50
-      case 'C'  => 100
-      case 'D'  => 500
-      case 'M'  => 1000
-      case _    => -1
-    }
+  /** Constants */
+  val HowManyCredits: String    = "how many Credits is "
+  val HowMuch: String           = "how much is "
+  val Question: String          = " ?"
+  val Credits: String           = "Credits"
+  val NoIdeaWhatYouTalk: String = "I have no idea what you are talking about"
 
-  /** List of valid Roman Characters */
-  val ValidRomanChars = List('I', 'V', 'X', 'L', 'C', 'D', 'M')
+  var alienToRomanMap: Map[String, String]  = Map[String, String]()
+  var metalValuesMap: Map[String, Double]   = Map[String, Double]()
 
-  /** Returns true, if the given character is a valid Roman number */
-  def isValidRomanChar(char: Char): Boolean = ValidRomanChars.contains(char)
+  /** return true if the given string is a valid Alien currency */
+  def isAlienCurrencyValid(alienCurrency: String): Boolean =
+    alienCurrency.split(" ").exists(alienToRomanMap.get(_).nonEmpty)
 
-  /**
-    * Returns true, if the given String is a valid Roman number
-    *
-    * all the conditions are explained where required
-    */
-  def isRomanValid(str: String): Boolean = {
+  /** takes Alien currency are input and returns roman numeral */
+  def getRomanFromAlien(alienCurrency: String): String =
+    alienCurrency.split(" ").map(alienToRomanMap).mkString
 
-    val strLength = str.length
+  /** sets Alien currency -> Roman numeral in alienToRomanMap map */
+  def updateAlienToRomanMap(alienCurrency: String, romanNumeral: String): Unit =
+    alienToRomanMap = alienToRomanMap + (alienCurrency -> romanNumeral)
 
-    /** Condition 1:
-      *  filtering the roman characters in the given string
-      *  and check if any non Roman numbers exists
-      */
-    if (str.filter(isValidRomanChar).length != strLength)
-      return false
+  /** extracts metal from given input and sets it in the metalValuesMap map */
+  def updateMetalValue(givenInput: String): Unit = {
 
-    /** Condition 2:
-      *  "D", "L", and "V" can never be repeated and
-      *  no character can repeat more than 4 times
-      */
-    if (str.count(_ == 'D') > 1 ||
-        str.count(_ == 'L') > 1 ||
-        str.count(_ == 'V') > 1 ||
-        str.count(_ == 'I') > 4 ||
-        str.count(_ == 'X') > 4 ||
-        str.count(_ == 'C') > 4 ||
-        str.count(_ == 'M') > 4 )
-      return false
+    val metal = givenInput.split(" is ").head.split(" ").filterNot(str => alienToRomanMap.contains(str)).head
+    val curCredits = givenInput.split(" is ").last.split(" ").head.toDouble
+    val curArabicValue = RomanNumerals.romanToDecimal(
+                          getRomanFromAlien(givenInput.split(" ")
+                                                      .filter(alienToRomanMap.contains(_))
+                                                      .mkString(" ")))
+    metalValuesMap = metalValuesMap + (metal -> curCredits/curArabicValue)
 
-    /** Condition 3:
-      *  The symbols "I", "X", "C", and "M" can be
-      *  repeated no more than three times in succession
-      */
-    for (i <- 0 to strLength-4){
-      val curSubString = str.substring(i, i+4)
-      if(curSubString.count(_ == curSubString(0)) == 4)
-        return false
-    }
-
-    /** Condition 4:
-      *  The symbols "I", "X", "C", and "M" may appear four times
-      *  if the third and fourth are separated by a smaller value
-      */
-    for (i <- 0 to strLength-5){
-      val curSubString = str.substring(i, i+5)
-      val curCharFreq = curSubString.count(_ == curSubString(0))
-      if (curCharFreq == 4 && romanValue(curSubString(0)) > romanValue(curSubString(4)))
-        return false
-    }
-
-    /** Return true, when all invalid conditions fail */
-    true
   }
 
-  def getActualValue(str: String): Int = {
-    val strLen      = str.length
-    var finalValue  = 0
-    var isValid     = true
+  /** return true if the give alien currency is valid */
+  def isGalaxyCurrencyValid(alienCurrency: String): Boolean =
+    isAlienCurrencyValid(alienCurrency) && RomanNumerals.isRomanValid(getRomanFromAlien(alienCurrency))
 
-    var i = 0
-    breakable{
-      while (i < strLen){
-        if (i == strLen-1){
-          finalValue += romanValue(str(i))
-          i += 1
-        }else if (romanValue(str(i)) < romanValue(str(i+1))){
-          if ((str(i) == 'V' || str(i) == 'L' || str(i) == 'D') ||
-            (str(i) == 'I' && (str(i+1) != 'V' && str(i+1) != 'X')) ||
-            (str(i) == 'X' && (str(i+1) != 'L' && str(i+1) != 'C')) ||
-            (str(i) == 'C' && (str(i+1) != 'D' && str(i+1) != 'M')) ){
-            isValid = false
-            break
-          }
-          finalValue += romanValue(str(i+1)) - romanValue(str(i))
-          i += 2
-        }else if (romanValue(str(i)) >= romanValue(str(i+1))){
-          finalValue += romanValue(str(i))
-          i += 1
-        }
-      }
-    }
-    if (isValid) finalValue else -1
+  /** prints Alien currency in decimal credits */
+  def printGalaxyCredits(givenInput: String): Unit = {
+
+    val alienValue          = givenInput.substring(HowManyCredits.length, givenInput.length - Question.length)
+    val currentMetal        = alienValue.split(" ").last
+    val alienCurrency       = alienValue.substring(0, alienValue.length - currentMetal.length - 1)
+    val alienCurrencyValue  = RomanNumerals.romanToDecimal(getRomanFromAlien(alienCurrency))
+
+    if(isGalaxyCurrencyValid(alienCurrency) && alienCurrencyValue != -1){
+      val finalValue = (alienCurrencyValue * metalValuesMap(currentMetal)).toInt
+      println(s"$alienCurrency is $finalValue $Credits")
+    }else
+      println(NoIdeaWhatYouTalk)
+
   }
 
+  /** prints Alien currency in decimal */
+  def printGalaxyValue(givenInput: String): Unit = {
 
+    val alienCurrency       = givenInput.substring(HowMuch.length, givenInput.length - Question.length)
+    val alienCurrencyValue  = RomanNumerals.romanToDecimal(getRomanFromAlien(alienCurrency))
+    if(isGalaxyCurrencyValid(alienCurrency) && alienCurrencyValue != -1)
+      println(s"$alienCurrency is $alienCurrencyValue")
+    else
+      println(NoIdeaWhatYouTalk)
+
+  }
+
+  def intergalaxy(inputLine: String): Any = {
+
+    val curLineWords: Array[String] = inputLine.split(" ")
+    inputLine match {
+
+      case _: String if curLineWords.length == 3  &&
+                        curLineWords(1) == "is"   &&
+                        RomanNumerals.ValidRomanNumerals.contains(curLineWords.last.last) =>
+        updateAlienToRomanMap(curLineWords(0), curLineWords(2))
+
+      case givenInput: String if givenInput.endsWith(Credits) =>
+        updateMetalValue(givenInput)
+
+      case givenInput: String if givenInput.startsWith(HowMuch) && givenInput.endsWith(Question) =>
+        printGalaxyValue(givenInput)
+
+      case givenInput: String if givenInput.startsWith(HowManyCredits) && givenInput.endsWith(Question) =>
+        printGalaxyCredits(givenInput)
+
+      case _ =>
+        println(NoIdeaWhatYouTalk)
+    }
+
+  }
 
 }
-
-
