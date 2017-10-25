@@ -1,7 +1,13 @@
 import scala.util.control.Breaks._
 
-object Galaxy extends App{
+/**
+  * Galaxy where
+  *
+  * all the conditions are explained where required
+  */
+class Galaxy {
 
+  /** returns Arabic value of the given Roman value */
   def romanValue(str: Char): Int =
     str match {
       case 'I'  => 1
@@ -14,18 +20,33 @@ object Galaxy extends App{
       case _    => -1
     }
 
-  val validRomanChars = List('I', 'V', 'X', 'L', 'C', 'D', 'M')
+  /** List of valid Roman Characters */
+  val ValidRomanChars = List('I', 'V', 'X', 'L', 'C', 'D', 'M')
 
-  def isValidRomanChar(char: Char): Boolean = validRomanChars.contains(char)
+  /** Returns true, if the given character is a valid Roman number */
+  def isValidRomanChar(char: Char): Boolean = ValidRomanChars.contains(char)
 
+  /**
+    * Returns true, if the given String is a valid Roman number
+    *
+    * all the conditions are explained where required
+    */
   def isRomanValid(str: String): Boolean = {
 
     val strLength = str.length
 
-    if(str.filter(isValidRomanChar).length != strLength)
+    /** Condition 1:
+      *  filtering the roman characters in the given string
+      *  and check if any non Roman numbers exists
+      */
+    if (str.filter(isValidRomanChar).length != strLength)
       return false
 
-    if( str.count(_ == 'D') > 1 ||
+    /** Condition 2:
+      *  "D", "L", and "V" can never be repeated and
+      *  no character can repeat more than 4 times
+      */
+    if (str.count(_ == 'D') > 1 ||
         str.count(_ == 'L') > 1 ||
         str.count(_ == 'V') > 1 ||
         str.count(_ == 'I') > 4 ||
@@ -34,19 +55,28 @@ object Galaxy extends App{
         str.count(_ == 'M') > 4 )
       return false
 
-    for(i <- 0 to strLength-4){
+    /** Condition 3:
+      *  The symbols "I", "X", "C", and "M" can be
+      *  repeated no more than three times in succession
+      */
+    for (i <- 0 to strLength-4){
       val curSubString = str.substring(i, i+4)
       if(curSubString.count(_ == curSubString(0)) == 4)
         return false
     }
 
-    for(i <- 0 to strLength-5){
+    /** Condition 4:
+      *  The symbols "I", "X", "C", and "M" may appear four times
+      *  if the third and fourth are separated by a smaller value
+      */
+    for (i <- 0 to strLength-5){
       val curSubString = str.substring(i, i+5)
       val curCharFreq = curSubString.count(_ == curSubString(0))
-      if(curCharFreq == 4 && romanValue(curSubString(0)) > romanValue(curSubString(4)))
+      if (curCharFreq == 4 && romanValue(curSubString(0)) > romanValue(curSubString(4)))
         return false
     }
 
+    /** Return true, when all invalid conditions fail */
     true
   }
 
@@ -57,12 +87,12 @@ object Galaxy extends App{
 
     var i = 0
     breakable{
-      while(i < strLen){
-        if(i == strLen-1){
+      while (i < strLen){
+        if (i == strLen-1){
           finalValue += romanValue(str(i))
           i += 1
-        }else if(romanValue(str(i)) < romanValue(str(i+1))){
-          if( (str(i) == 'V' || str(i) == 'L' || str(i) == 'D') ||
+        }else if (romanValue(str(i)) < romanValue(str(i+1))){
+          if ((str(i) == 'V' || str(i) == 'L' || str(i) == 'D') ||
             (str(i) == 'I' && (str(i+1) != 'V' && str(i+1) != 'X')) ||
             (str(i) == 'X' && (str(i+1) != 'L' && str(i+1) != 'C')) ||
             (str(i) == 'C' && (str(i+1) != 'D' && str(i+1) != 'M')) ){
@@ -71,14 +101,17 @@ object Galaxy extends App{
           }
           finalValue += romanValue(str(i+1)) - romanValue(str(i))
           i += 2
-        }else if(romanValue(str(i)) >= romanValue(str(i+1))){
+        }else if (romanValue(str(i)) >= romanValue(str(i+1))){
           finalValue += romanValue(str(i))
           i += 1
         }
       }
     }
-    if(isValid) finalValue else -1
+    if (isValid) finalValue else -1
   }
 
+
+
 }
+
 
