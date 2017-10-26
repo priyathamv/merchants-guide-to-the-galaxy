@@ -1,4 +1,4 @@
-package com.thoughtworks.galaxy
+package com.thoughtworks.testgalaxy
 
 import scala.util.control.Breaks._
 
@@ -11,8 +11,8 @@ import scala.util.control.Breaks._
 object RomanNumerals {
 
   /** returns Decimal value of the given Roman numeral */
-  def getDecimalValue(str: Char): Int =
-    str match {
+  def getDecimalValue(char: Char): Int =
+    char match {
       case 'I'  => 1
       case 'V'  => 5
       case 'X'  => 10
@@ -74,7 +74,7 @@ object RomanNumerals {
     for (i <- 0 to strLength-5) {
       val curSubString = str.substring(i, i+5)
       val curCharFreq = curSubString.count(_ == curSubString(0))
-      if (curCharFreq == 4 && getDecimalValue(curSubString(0)) > getDecimalValue(curSubString(4)))
+      if (curCharFreq == 4 && (getDecimalValue(curSubString(0)) < getDecimalValue(curSubString(3))))
         return false
     }
 

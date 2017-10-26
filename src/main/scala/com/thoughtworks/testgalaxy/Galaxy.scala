@@ -1,4 +1,4 @@
-package com.thoughtworks.galaxy
+package com.thoughtworks.testgalaxy
 
 /**
   * Galaxy class has methods to map alien values

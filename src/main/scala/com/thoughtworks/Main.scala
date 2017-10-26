@@ -1,6 +1,6 @@
 package com.thoughtworks
 
-import com.thoughtworks.galaxy.Galaxy
+import com.thoughtworks.testgalaxy.Galaxy
 import scala.io.Source
 
 /** Application starting point,
