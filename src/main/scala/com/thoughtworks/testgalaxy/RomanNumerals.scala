@@ -8,7 +8,7 @@ import scala.util.control.Breaks._
   * majorly contains functions to convert
   * Roman numerals to Decimal values and its utils
   */
-object RomanNumerals {
+object  RomanNumerals {
 
   /** returns Decimal value of the given Roman numeral */
   def getDecimalValue(char: Char): Int =
@@ -87,6 +87,8 @@ object RomanNumerals {
     * returns -1 if the Roman numeral is invalid
     */
   def romanToDecimal(romanNumeral: String): Int = {
+    if (romanNumeral.isEmpty) return -1
+
     val romanNumLength  = romanNumeral.length
     var decimalValue    = 0
     var isValid         = true

@@ -15,6 +15,6 @@ object Main extends App {
   val galaxyObj = new Galaxy
 
   for (line <- getInputFileLines("input.txt"))
-    galaxyObj.intergalaxy(line)
+    galaxyObj.interGalaxy(line)
 
 }

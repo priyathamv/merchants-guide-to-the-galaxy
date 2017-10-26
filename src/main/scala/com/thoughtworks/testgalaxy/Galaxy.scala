@@ -19,15 +19,19 @@ class Galaxy {
 
   /** return true if the given string is a valid Alien currency */
   def isAlienCurrencyValid(alienCurrency: String): Boolean =
-    alienCurrency.split(" ").exists(alienToRomanMap.get(_).nonEmpty)
+    if(alienCurrency.split(" ").count(alienToRomanMap.contains(_)) == alienCurrency.split(" ").length) true else false
 
   /** takes Alien currency are input and returns roman numeral */
   def getRomanFromAlien(alienCurrency: String): String =
-    alienCurrency.split(" ").map(alienToRomanMap).mkString
+    if (isAlienCurrencyValid(alienCurrency))
+      alienCurrency.split(" ").map(alienToRomanMap).mkString
+    else
+      ""
 
   /** sets Alien currency -> Roman numeral in alienToRomanMap map */
   def updateAlienToRomanMap(alienCurrency: String, romanNumeral: String): Unit =
-    alienToRomanMap = alienToRomanMap + (alienCurrency -> romanNumeral)
+    if(!alienToRomanMap.contains(alienCurrency))
+      alienToRomanMap = alienToRomanMap + (alienCurrency -> romanNumeral)
 
   /** extracts metal from given input and sets it in the metalValuesMap map */
   def updateMetalValue(givenInput: String): Unit = {
@@ -38,43 +42,42 @@ class Galaxy {
                           getRomanFromAlien(givenInput.split(" ")
                                                       .filter(alienToRomanMap.contains(_))
                                                       .mkString(" ")))
-    metalValuesMap = metalValuesMap + (metal -> curCredits/curArabicValue)
+    if(!metalValuesMap.contains(metal))
+      metalValuesMap = metalValuesMap + (metal -> curCredits/curArabicValue)
 
   }
 
-  /** return true if the give alien currency is valid */
-  def isGalaxyCurrencyValid(alienCurrency: String): Boolean =
-    isAlienCurrencyValid(alienCurrency) && RomanNumerals.isRomanValid(getRomanFromAlien(alienCurrency))
-
   /** prints Alien currency in decimal credits */
-  def printGalaxyCredits(givenInput: String): Unit = {
+  def getGalaxyCredits(givenInput: String): String = {
 
     val alienValue          = givenInput.substring(HowManyCredits.length, givenInput.length - Question.length)
     val currentMetal        = alienValue.split(" ").last
     val alienCurrency       = alienValue.substring(0, alienValue.length - currentMetal.length - 1)
     val alienCurrencyValue  = RomanNumerals.romanToDecimal(getRomanFromAlien(alienCurrency))
 
-    if(isGalaxyCurrencyValid(alienCurrency) && alienCurrencyValue != -1){
+    if(alienCurrencyValue != -1){
       val finalValue = (alienCurrencyValue * metalValuesMap(currentMetal)).toInt
-      println(s"$alienCurrency is $finalValue $Credits")
+      s"$alienCurrency $currentMetal is $finalValue $Credits"
     }else
-      println(NoIdeaWhatYouTalk)
+      NoIdeaWhatYouTalk
 
   }
 
   /** prints Alien currency in decimal */
-  def printGalaxyValue(givenInput: String): Unit = {
-
-    val alienCurrency       = givenInput.substring(HowMuch.length, givenInput.length - Question.length)
+  def getGalaxyValue(givenInput: String): String = {
+    val (startIndex, endIndex) = (HowMuch.length, givenInput.length - Question.length)
+    if(startIndex >= endIndex)
+      return NoIdeaWhatYouTalk
+    val alienCurrency       = givenInput.substring(startIndex, endIndex)
     val alienCurrencyValue  = RomanNumerals.romanToDecimal(getRomanFromAlien(alienCurrency))
-    if(isGalaxyCurrencyValid(alienCurrency) && alienCurrencyValue != -1)
-      println(s"$alienCurrency is $alienCurrencyValue")
+    if(alienCurrencyValue != -1)
+      s"$alienCurrency is $alienCurrencyValue"
     else
-      println(NoIdeaWhatYouTalk)
+      NoIdeaWhatYouTalk
 
   }
 
-  def intergalaxy(inputLine: String): Any = {
+  def interGalaxy(inputLine: String): Any = {
 
     val curLineWords: Array[String] = inputLine.split(" ")
     inputLine match {
@@ -88,10 +91,11 @@ class Galaxy {
         updateMetalValue(givenInput)
 
       case givenInput: String if givenInput.startsWith(HowMuch) && givenInput.endsWith(Question) =>
-        printGalaxyValue(givenInput)
+        val galaxyValue = getGalaxyValue(givenInput)
+        println(galaxyValue)
 
       case givenInput: String if givenInput.startsWith(HowManyCredits) && givenInput.endsWith(Question) =>
-        printGalaxyCredits(givenInput)
+        println(getGalaxyCredits(givenInput))
 
       case _ =>
         println(NoIdeaWhatYouTalk)
