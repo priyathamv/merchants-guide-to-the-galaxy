@@ -10,11 +10,6 @@ import org.mockito.Mockito._
   * different kinds of Roman inputs to check its
   * validity and conversions to Decimal values
   */
-
-trait DataService {
-  def findData: String
-}
-
 class GalaxySpec extends FlatSpec with TestMocks with Matchers with MockitoSugar {
 
   "isAlienCurrencyValid" should "return true if the alien currency given is valid" in {

@@ -7,10 +7,18 @@ import scala.util.control.Breaks._
   *
   * majorly contains functions to convert
   * Roman numerals to Decimal values and its utils
+  *
+  * @author Vinnakota Priyatam
   */
 object  RomanNumerals {
 
-  /** returns Decimal value of the given Roman numeral */
+  /** List of valid Roman numerals */
+  val ValidRomanNumerals = List('I', 'V', 'X', 'L', 'C', 'D', 'M')
+
+  /**
+    * @return Returns Decimal value of the given Roman numeral
+    * @param char Roman numeral
+    * */
   def getDecimalValue(char: Char): Int =
     char match {
       case 'I'  => 1
@@ -23,15 +31,16 @@ object  RomanNumerals {
       case _    => -1
     }
 
-  /** List of valid Roman numerals */
-  val ValidRomanNumerals = List('I', 'V', 'X', 'L', 'C', 'D', 'M')
-
-  /** returns true, if the given character is a valid Roman numeral */
+  /**
+    * @return Returns true, if the given character is a valid Roman numeral
+    * @param char Roman numeral to be validated
+    * */
   def isValidRomanChar(char: Char): Boolean = ValidRomanNumerals.contains(char)
 
   /**
-    * Returns true, if the given String is a valid Roman numeral
+    * @return Returns true, if the given String is a valid Roman numeral
     * all the conditions are explained where required
+    * @param str Roman number to be validated
     */
   def isRomanValid(str: String): Boolean = {
 
@@ -83,8 +92,9 @@ object  RomanNumerals {
   }
 
   /**
-    * Converts given Roman numeral into Decimal value
-    * returns -1 if the Roman numeral is invalid
+    * @return Returns Decimal value of the given `romanNumeral`,
+    * -1 if the Roman numeral is invalid
+    * @param romanNumeral Roman numeral to be converted to decimal
     */
   def romanToDecimal(romanNumeral: String): Int = {
     if (romanNumeral.isEmpty) return -1

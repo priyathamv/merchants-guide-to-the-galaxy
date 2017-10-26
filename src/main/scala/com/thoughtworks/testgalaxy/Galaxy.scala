@@ -1,9 +1,12 @@
 package com.thoughtworks.testgalaxy
 
 /**
-  * Galaxy class has methods to map alien values
-  * to roman values, decrypting alien values to
-  * decimal values and required utils!
+  * A class to represent a Galaxy
+  *
+  * Includes methods to decrypt alien code
+  * to Human understandable form
+  *
+  * @author Vinnakota Priyatam
   */
 class Galaxy {
 
@@ -17,11 +20,18 @@ class Galaxy {
   var alienToRomanMap: Map[String, String]  = Map[String, String]()
   var metalValuesMap: Map[String, Double]   = Map[String, Double]()
 
-  /** return true if the given string is a valid Alien currency */
+  /**
+    * @return Returns true, if the given string is a valid Alien currency
+    * @param alienCurrency Alien currency to be checked for validation
+    * */
   def isAlienCurrencyValid(alienCurrency: String): Boolean =
     if(alienCurrency.split(" ").count(alienToRomanMap.contains(_)) == alienCurrency.split(" ").length) true else false
 
-  /** takes Alien currency are input and returns roman numeral */
+  /**
+    * @return Returns Roman numeral for the given
+    *         Alien currency if valid else an empty string
+    * @param alienCurrency Alien currency to be converted to Roman equivalent
+    * */
   def getRomanFromAlien(alienCurrency: String): String =
     if (isAlienCurrencyValid(alienCurrency))
       alienCurrency.split(" ").map(alienToRomanMap).mkString
@@ -33,7 +43,9 @@ class Galaxy {
     if(!alienToRomanMap.contains(alienCurrency))
       alienToRomanMap = alienToRomanMap + (alienCurrency -> romanNumeral)
 
-  /** extracts metal from given input and sets it in the metalValuesMap map */
+  /** extracts metal from given input and sets it in the metalValuesMap map
+    * @param givenInput Alien code from which the metal and its value to be extracted
+    * */
   def updateMetalValue(givenInput: String): Unit = {
 
     val metal = givenInput.split(" is ").head.split(" ").filterNot(str => alienToRomanMap.contains(str)).head
@@ -47,7 +59,9 @@ class Galaxy {
 
   }
 
-  /** prints Alien currency in decimal credits */
+  /** prints Alien currency in decimal credits
+    * @param givenInput Alien code to be converted to decimal Credits
+    * */
   def getGalaxyCredits(givenInput: String): String = {
 
     val alienValue          = givenInput.substring(HowManyCredits.length, givenInput.length - Question.length)
@@ -63,7 +77,9 @@ class Galaxy {
 
   }
 
-  /** prints Alien currency in decimal */
+  /** prints Alien currency in decimal
+    * @param givenInput Alien code to be converted to decimal value
+    * */
   def getGalaxyValue(givenInput: String): String = {
     val (startIndex, endIndex) = (HowMuch.length, givenInput.length - Question.length)
     if(startIndex >= endIndex)
@@ -77,6 +93,10 @@ class Galaxy {
 
   }
 
+  /** gets the input line from file and routes
+    * the data to the corresponding method
+    * @param inputLine The alien statement to be decrypted
+    */
   def interGalaxy(inputLine: String): Any = {
 
     val curLineWords: Array[String] = inputLine.split(" ")
@@ -95,7 +115,8 @@ class Galaxy {
         println(galaxyValue)
 
       case givenInput: String if givenInput.startsWith(HowManyCredits) && givenInput.endsWith(Question) =>
-        println(getGalaxyCredits(givenInput))
+        val galaxyCredits = getGalaxyCredits(givenInput)
+        println(galaxyCredits)
 
       case _ =>
         println(NoIdeaWhatYouTalk)
