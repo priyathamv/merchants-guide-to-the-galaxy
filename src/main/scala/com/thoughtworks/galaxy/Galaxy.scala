@@ -25,7 +25,7 @@ class Galaxy {
     * @param alienCurrency Alien currency to be checked for validation
     * */
   def isAlienCurrencyValid(alienCurrency: String): Boolean =
-    if(alienCurrency.split(" ")
+    if (alienCurrency.split(" ")
                     .count(alienToRomanMap.contains(_)) == alienCurrency.split(" ")
                                                                         .length)
       true
@@ -44,7 +44,7 @@ class Galaxy {
 
   /** sets Alien currency -> Roman numeral in alienToRomanMap map */
   def updateAlienToRomanMap(alienCurrency: String, romanNumeral: String): Unit =
-    if(!alienToRomanMap.contains(alienCurrency))
+    if (!alienToRomanMap.contains(alienCurrency))
       alienToRomanMap = alienToRomanMap + (alienCurrency -> romanNumeral)
 
   /**
@@ -56,7 +56,7 @@ class Galaxy {
                                     .head
                                     .split(" ")
                                     .filterNot(str => alienToRomanMap.contains(str))
-    if(metalWordsInCode.length == 1 && metalValuesMap.contains(metalWordsInCode.head))
+    if (metalWordsInCode.nonEmpty)
       metalWordsInCode.head
     else ""
   }
@@ -77,7 +77,7 @@ class Galaxy {
                                  .last
                                  .split(" ")
 
-    if(creditsInCode.length > 1 && isDouble(creditsInCode.head))
+    if (creditsInCode.length > 1 && isDouble(creditsInCode.head))
       creditsInCode.head.toDouble
     else 0.0
   }
@@ -118,7 +118,7 @@ class Galaxy {
   def getGalaxyCredits(givenInput: String): String = {
 
     val (startIndex, endIndex) = (HowManyCredits.length, givenInput.length - Question.length)
-    if(startIndex >= endIndex)
+    if (startIndex >= endIndex)
       return NoIdeaWhatYouTalk
 
     val alienValue          = givenInput.substring(startIndex, endIndex)
@@ -141,11 +141,11 @@ class Galaxy {
   def getGalaxyValue(givenInput: String): String = {
 
     val (startIndex, endIndex) = (HowMuch.length, givenInput.length - Question.length)
-    if(startIndex >= endIndex)
+    if (startIndex >= endIndex)
       return NoIdeaWhatYouTalk
     val alienCurrency       = givenInput.substring(startIndex, endIndex)
     val alienCurrencyValue  = RomanNumerals.romanToDecimal(getRomanFromAlien(alienCurrency))
-    if(alienCurrencyValue != -1)
+    if (alienCurrencyValue != -1)
       s"$alienCurrency is $alienCurrencyValue"
     else
       NoIdeaWhatYouTalk
