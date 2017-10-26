@@ -1,6 +1,6 @@
-package com.thoughtworks.testgalaxy.mocks
+package com.thoughtworks.galaxy.mocks
 
-import com.thoughtworks.testgalaxy.Galaxy
+import com.thoughtworks.galaxy.Galaxy
 import org.mockito.Mockito.spy
 import org.scalatest.mockito.MockitoSugar
 

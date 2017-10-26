@@ -1,4 +1,4 @@
-package com.thoughtworks.testgalaxy
+package com.thoughtworks.galaxy
 
 import org.scalatest.FlatSpec
 

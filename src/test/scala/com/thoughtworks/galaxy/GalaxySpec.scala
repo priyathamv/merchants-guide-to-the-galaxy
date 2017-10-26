@@ -1,6 +1,6 @@
-package com.thoughtworks.testgalaxy
+package com.thoughtworks.galaxy
 
-import com.thoughtworks.testgalaxy.mocks.TestMocks
+import com.thoughtworks.galaxy.mocks.TestMocks
 import org.scalatest._
 import org.scalatest.mockito._
 import org.mockito.Mockito._
@@ -39,6 +39,46 @@ class GalaxySpec extends FlatSpec with TestMocks with Matchers with MockitoSugar
     assert(testGalaxyObj.alienToRomanMap contains "testAlien")
   }
 
+  "getMetalFromCode" should "return the metal name from the given Alien code" in {
+    val metal = testGalaxyObj.getMetalFromCode("glob prok Gold is 57800 Credits")
+    assert(metal === "Gold")
+  }
+
+  it should "return empty string if the no valid metals exists" in {
+    val metal = testGalaxyObj.getMetalFromCode("glob prok Random metal is 57800 Credits")
+    assert(metal === "")
+  }
+
+  "isDouble" should "return true if the given string is Double parsable" in {
+    val isValid = testGalaxyObj.isDouble("20.45")
+    assert(isValid === true)
+  }
+
+  it should "return false if the given string is not Double parsable" in {
+    val isValid = testGalaxyObj.isDouble("2a45")
+    assert(isValid === false)
+  }
+
+  "getCreditsFromCode" should "return Credit from the given alien code" in {
+    val credits = testGalaxyObj.getCreditsFromCode("pish pish Iron is 3910 Credits")
+    assert(credits === 3910)
+  }
+
+  it should "return 0.0 if no valid Credit exists in the given alien code" in {
+    val credits = testGalaxyObj.getCreditsFromCode("pish pish Iron is blah blah Credits")
+    assert(credits === 0.0)
+  }
+
+  "getDecimalFromAlien" should "return Decimal value from the given alien code" in {
+    val decimal = testGalaxyObj.getDecimalFromAlien("how many Credits is glob prok Silver ?")
+    assert(decimal === 4)
+  }
+
+  it should "return -1 if the given alien code not a valid one" in {
+    val decimal = testGalaxyObj.getDecimalFromAlien("how many Credits is something random string Silver ?")
+    assert(decimal === -1)
+  }
+
   "updateMetalValue" should "update the metalValuesMap with the new values" in {
     testGalaxyObj.updateMetalValue("glob prok Gold is 57800 Credits")
     assert(testGalaxyObj.metalValuesMap("Gold") === 14450.0)
@@ -50,7 +90,7 @@ class GalaxySpec extends FlatSpec with TestMocks with Matchers with MockitoSugar
     assert(galaxyValue === "pish tegj glob glob is 42")
   }
 
-  "printGalaxyValue" should "print 'No idea what you are talking " +
+  it should "print 'No idea what you are talking " +
     "if the given input is invalid" in {
     val input = "how much wood could a woodchuck chuck if a woodchuck could chuck wood ?"
     val galaxyValue = testGalaxyObj.getGalaxyValue(input)
@@ -63,7 +103,7 @@ class GalaxySpec extends FlatSpec with TestMocks with Matchers with MockitoSugar
     assert(galaxyValue === "glob prok Gold is 57800 Credits")
   }
 
-  "getGalaxyCredits" should "print 'No idea what you are talking " +
+  it should "print 'No idea what you are talking " +
     "if the given input is invalid" in {
     val input = "how much wood could a woodchuck chuck if a woodchuck could chuck wood ?"
     val galaxyValue = testGalaxyObj.getGalaxyCredits(input)
@@ -73,7 +113,7 @@ class GalaxySpec extends FlatSpec with TestMocks with Matchers with MockitoSugar
   "interGalaxy" should "call printGalaxyValue function if the given input" +
         " starts with 'how much' and ends with ' ?'" in {
     doNothing().when(galaxySpy).updateAlienToRomanMap("glob", "I")
-    galaxySpy.interGalaxy("glob is I")
+    galaxySpy.decryptAlienCode("glob is I")
     verify(galaxySpy, times(1)).updateAlienToRomanMap("glob", "I")
   }
 
@@ -81,7 +121,7 @@ class GalaxySpec extends FlatSpec with TestMocks with Matchers with MockitoSugar
     " ends with Credits" in {
     val input = "pish pish Iron is 3910 Credits"
     doNothing().when(galaxySpy).updateMetalValue(input)
-    galaxySpy.interGalaxy(input)
+    galaxySpy.decryptAlienCode(input)
     verify(galaxySpy, times(1)).updateMetalValue(input)
   }
 
@@ -89,7 +129,7 @@ class GalaxySpec extends FlatSpec with TestMocks with Matchers with MockitoSugar
     " starts with 'how much' ends with ' ?'" in {
     val input = "how much is pish tegj glob glob ?"
     when(galaxySpy.getGalaxyValue(input)).thenReturn("pish tegj glob glob is 42")
-    testGalaxyObj.interGalaxy(input)
+    testGalaxyObj.decryptAlienCode(input)
     verify(galaxySpy, times(1)).getGalaxyValue(input)
   }
 
@@ -97,7 +137,7 @@ class GalaxySpec extends FlatSpec with TestMocks with Matchers with MockitoSugar
     " starts with 'how many Credits ' ends with ' ?'" in {
     val input = "how many Credits is glob prok Silver ?"
     when(galaxySpy.getGalaxyCredits(input)).thenReturn("glob prok Silver is 68 Credits")
-    testGalaxyObj.interGalaxy(input)
+    testGalaxyObj.decryptAlienCode(input)
     verify(galaxySpy, times(1)).getGalaxyCredits(input)
   }
 

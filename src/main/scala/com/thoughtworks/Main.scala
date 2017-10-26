@@ -1,6 +1,6 @@
 package com.thoughtworks
 
-import com.thoughtworks.testgalaxy.Galaxy
+import com.thoughtworks.galaxy.Galaxy
 import scala.io.Source
 
 /** Application starting point,
@@ -15,6 +15,6 @@ object Main extends App {
   val galaxyObj = new Galaxy
 
   for (line <- getInputFileLines("input.txt"))
-    galaxyObj.interGalaxy(line)
+    galaxyObj.decryptAlienCode(line)
 
 }
