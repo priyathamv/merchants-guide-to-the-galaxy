@@ -1,20 +1,32 @@
 package com.thoughtworks
 
+import java.io.{FileNotFoundException, IOException}
+
 import com.thoughtworks.galaxy.Galaxy
+
 import scala.io.Source
 
-/** Application starting point,
-  * takes input from input.txt file
-  * located in resources directory
+/**
+  * Application starting point
   */
 object Main extends App {
 
-  def getInputFileLines(fileName: String): Iterator[String] =
-    Source.fromResource(fileName).getLines()
+  val fileName = args.length match {
+    case 0 => "input.txt"
+    case _ => args.head
+  }
 
-  val galaxyObj = new Galaxy
+  val galaxyObj: Galaxy = new Galaxy
 
-  for (line <- getInputFileLines("input.txt"))
-    galaxyObj.decryptAlienCode(line)
+  try {
+    val bufferedSource = Source.fromFile(fileName)
+    for (line <- bufferedSource.getLines())
+      galaxyObj.decryptAlienCode(line)
+
+    bufferedSource.close
+  } catch {
+    case e: FileNotFoundException => println(e.getMessage)
+    case e: IOException           => println(e.getMessage)
+  }
 
 }

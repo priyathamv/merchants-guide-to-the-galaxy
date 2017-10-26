@@ -72,7 +72,7 @@ object  RomanNumerals {
       */
     for (i <- 0 to strLength-4) {
       val curSubString = str.substring(i, i+4)
-      if(curSubString.count(_ == curSubString(0)) == 4)
+      if (curSubString.count(_ == curSubString(0)) == 4)
         return false
     }
 
