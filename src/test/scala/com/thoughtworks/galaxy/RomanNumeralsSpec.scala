@@ -19,13 +19,13 @@ class RomanNumeralsSpec extends FlatSpec {
     assert(decimalValue === -1)
   }
 
-  "isValidRomanChar" should "return true if the Roman numeral is valid" in {
-    val isValid = RomanNumerals.isValidRomanChar('M')
+  "isRomanCharValid" should "return true if the Roman numeral is valid" in {
+    val isValid = RomanNumerals.isRomanCharValid('M')
     assert(isValid === true)
   }
 
   it should "return false if the Roman numeral is invalid" in {
-    val isValid = RomanNumerals.isValidRomanChar('S')
+    val isValid = RomanNumerals.isRomanCharValid('S')
     assert(isValid === false)
   }
 
@@ -67,19 +67,39 @@ class RomanNumeralsSpec extends FlatSpec {
     assert(isValid === true)
   }
 
+  it should "return false if the given Roman numeral is empty" in {
+    val isValid = RomanNumerals.isRomanValid("")
+    assert(isValid === false)
+  }
+
+  it should "return false if the given Roman numeral is decimal number" in {
+    val isValid = RomanNumerals.isRomanValid("12345")
+    assert(isValid === false)
+  }
+
+  it should "return false if the given Roman numeral has special chars" in {
+    val isValid = RomanNumerals.isRomanValid("MMCMLX VII")
+    assert(isValid === false)
+  }
+
   "romanToDecimal" should "return 289 if the given Roman numeral is CCLXXXIX" in {
-    val decimalValue = RomanNumerals.romanToDecimal("CCLXXXIX")
-    assert(decimalValue === 289)
+    val decimalValue = RomanNumerals.romanToDecimal(Some("CCLXXXIX"))
+    assert(decimalValue === Some(289))
   }
 
   it should "return 1903 if the given Roman numeral is MCMIII" in {
-    val decimalValue = RomanNumerals.romanToDecimal("MCMIII")
-    assert(decimalValue === 1903)
+    val decimalValue = RomanNumerals.romanToDecimal(Some("MCMIII"))
+    assert(decimalValue === Some(1903))
   }
 
-  it should "return -1 if the given Roman numeral is not valid" in {
-    val decimalValue = RomanNumerals.romanToDecimal("ID")
-    assert(decimalValue === -1)
+  it should "return None if the given Roman numeral is not valid" in {
+    val decimalValue = RomanNumerals.romanToDecimal(Some("ID"))
+    assert(decimalValue === None)
+  }
+
+  it should "return None if the given Roman numeral is empty" in {
+    val decimalValue = RomanNumerals.romanToDecimal(None)
+    assert(decimalValue === None)
   }
 
 }

@@ -24,23 +24,28 @@ class Galaxy {
     * @return Returns true, if the given string is a valid Alien currency
     * @param alienCurrency Alien currency to be checked for validation
     * */
-  def isAlienCurrencyValid(alienCurrency: String): Boolean =
-    if (alienCurrency.split(" ")
-                    .count(alienToRomanMap.contains(_)) == alienCurrency.split(" ")
-                                                                        .length)
+  def isAlienCurrencyValid(alienCurrency: String): Boolean = {
+    val wordsInCode = alienCurrency.split(" ")
+    if (alienCurrency.nonEmpty &&
+        wordsInCode.count(alienToRomanMap.contains(_)) == wordsInCode.length)
       true
     else
       false
+  }
 
   /**
     * @return Returns Roman numeral for the given
     *         Alien currency if valid else an empty string
     * @param alienCurrency Alien currency to be converted to Roman equivalent
     * */
-  def getRomanFromAlien(alienCurrency: String): String =
+  def getRomanFromAlien(alienCurrency: String): Option[String] =
     if (isAlienCurrencyValid(alienCurrency))
-      alienCurrency.split(" ").map(alienToRomanMap).mkString
-    else ""
+      Some(
+        alienCurrency.split(" ")
+                     .map(alienToRomanMap)
+                     .mkString
+      )
+    else None
 
   /** sets Alien currency -> Roman numeral in alienToRomanMap map */
   def updateAlienToRomanMap(alienCurrency: String, romanNumeral: String): Unit =
@@ -48,17 +53,18 @@ class Galaxy {
       alienToRomanMap = alienToRomanMap + (alienCurrency -> romanNumeral)
 
   /**
-    * @return Returns the metal name from the given input
+    * @return Returns the metal name from the given input,
+    *         None if no metal exists
     * @param alienCode Alien code from which the metals name to be extracted
     * */
-  def getMetalFromCode(alienCode: String): String = {
+  def getMetalFromCode(alienCode: String): Option[String] = {
     val metalWordsInCode = alienCode.split(" is ")
                                     .head
                                     .split(" ")
                                     .filterNot(str => alienToRomanMap.contains(str))
-    if (metalWordsInCode.nonEmpty)
-      metalWordsInCode.head
-    else ""
+    if (metalWordsInCode.length == 1)
+      Some(metalWordsInCode.head)
+    else None
   }
 
   /**
@@ -84,13 +90,15 @@ class Galaxy {
 
   /**
     * @return Returns the Decimal equivalent of the given Alien code
+    *         None, if the Alien code is invalid
     * @param alienCode Alien code which has to be converted to Decimal
     * */
-  def getDecimalFromAlien(alienCode: String): Int = {
+  def getDecimalFromAlien(alienCode: String): Option[Int] = {
     RomanNumerals.romanToDecimal(
       getRomanFromAlien(alienCode.split(" ")
                                  .filter(alienToRomanMap.contains(_))
-                                 .mkString(" "))
+                                 .mkString(" ")
+                       )
     )
   }
 
@@ -105,9 +113,9 @@ class Galaxy {
 
     if (currentMetal.nonEmpty &&
         currentCredits != 0.0 &&
-        currentDecimalValue != -1 &&
-        !metalValuesMap.contains(currentMetal)) {
-      metalValuesMap = metalValuesMap + (currentMetal -> currentCredits/currentDecimalValue)
+        currentDecimalValue.nonEmpty &&
+        !metalValuesMap.contains(currentMetal.get)) {
+      metalValuesMap = metalValuesMap + (currentMetal.get -> currentCredits/currentDecimalValue.get)
     } else
       println(NoIdeaWhatYouTalk)
   }
@@ -126,8 +134,8 @@ class Galaxy {
     val alienCurrency       = alienValue.substring(0, alienValue.length - currentMetal.length - 1)
     val alienCurrencyValue  = RomanNumerals.romanToDecimal(getRomanFromAlien(alienCurrency))
 
-    if (alienCurrencyValue != -1 && metalValuesMap.contains(currentMetal)){
-      val finalValue = (alienCurrencyValue * metalValuesMap(currentMetal)).toInt
+    if (alienCurrencyValue.nonEmpty && metalValuesMap.contains(currentMetal)){
+      val finalValue = (alienCurrencyValue.get * metalValuesMap(currentMetal)).toInt
       s"$alienCurrency $currentMetal is $finalValue $Credits"
     } else
       NoIdeaWhatYouTalk
@@ -145,8 +153,8 @@ class Galaxy {
       return NoIdeaWhatYouTalk
     val alienCurrency       = givenInput.substring(startIndex, endIndex)
     val alienCurrencyValue  = RomanNumerals.romanToDecimal(getRomanFromAlien(alienCurrency))
-    if (alienCurrencyValue != -1)
-      s"$alienCurrency is $alienCurrencyValue"
+    if (alienCurrencyValue.nonEmpty)
+      s"$alienCurrency is ${alienCurrencyValue.get}"
     else
       NoIdeaWhatYouTalk
 
@@ -157,7 +165,7 @@ class Galaxy {
     * the data to the corresponding method
     * @param alienCode The alien statement to be decrypted
     */
-  def decryptAlienCode(alienCode: String): Any = {
+  def decryptAlienCode(alienCode: String): Unit = {
 
     val curLineWords: Array[String] = alienCode.split(" ")
     alienCode match {

@@ -9,8 +9,10 @@ import scala.io.Source
 /**
   * Application starting point
   */
+@throws(classOf[FileNotFoundException])
 object Main extends App {
 
+  /** Get file name from args if provided */
   val fileName = args.length match {
     case 0 => "input.txt"
     case _ => args.head
@@ -23,6 +25,7 @@ object Main extends App {
     for (line <- bufferedSource.getLines())
       galaxyObj.decryptAlienCode(line)
 
+    /** Closing the file when finished with the file */
     bufferedSource.close
   } catch {
     case e: FileNotFoundException => println(e.getMessage)
@@ -30,3 +33,4 @@ object Main extends App {
   }
 
 }
+

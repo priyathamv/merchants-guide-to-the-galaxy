@@ -25,13 +25,13 @@ class GalaxySpec extends FlatSpec with TestMocks with Matchers with MockitoSugar
   "getRomanFromAlien" should "return roman numeral for the alien value given" in {
     when(testGalaxyMock.isAlienCurrencyValid("tegjl")).thenReturn(true)
     val romanNumeral = testGalaxyObj.getRomanFromAlien("tegj")
-    assert(romanNumeral === "L")
+    assert(romanNumeral === Some("L"))
   }
 
-  it should "return empty string if the alien value given is invalid" in {
+  it should "return None if the alien value given is invalid" in {
     when(testGalaxyMock.isAlienCurrencyValid("tegjldsa")).thenReturn(false)
     val romanNumeral = testGalaxyObj.getRomanFromAlien("tegjldsa")
-    assert(romanNumeral === "")
+    assert(romanNumeral === None)
   }
 
   "updateAlienToRomanMap" should "update the alienToRomanMap with the new values" in {
@@ -41,12 +41,12 @@ class GalaxySpec extends FlatSpec with TestMocks with Matchers with MockitoSugar
 
   "getMetalFromCode" should "return the metal name from the given Alien code" in {
     val metal = testGalaxyObj.getMetalFromCode("glob prok Gold is 57800 Credits")
-    assert(metal === "Gold")
+    assert(metal === Some("Gold"))
   }
 
-  it should "return empty string if the no valid metals exists" in {
+  it should "return None if the no valid metals exists" in {
     val metal = testGalaxyObj.getMetalFromCode("glob prok Random metal is 57800 Credits")
-    assert(metal === "")
+    assert(metal === None)
   }
 
   "isDouble" should "return true if the given string is Double parsable" in {
@@ -71,12 +71,12 @@ class GalaxySpec extends FlatSpec with TestMocks with Matchers with MockitoSugar
 
   "getDecimalFromAlien" should "return Decimal value from the given alien code" in {
     val decimal = testGalaxyObj.getDecimalFromAlien("how many Credits is glob prok Silver ?")
-    assert(decimal === 4)
+    assert(decimal === Some(4))
   }
 
-  it should "return -1 if the given alien code not a valid one" in {
+  it should "return None if the given alien code not a valid one" in {
     val decimal = testGalaxyObj.getDecimalFromAlien("how many Credits is something random string Silver ?")
-    assert(decimal === -1)
+    assert(decimal === None)
   }
 
   "updateMetalValue" should "update the metalValuesMap with the new values" in {

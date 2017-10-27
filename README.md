@@ -6,6 +6,8 @@ Buying and selling over the galaxy requires to convert numbers and units, this p
  
 The numbers used for intergalactic transactions follows similar convention to the roman numerals.
 
+Check problem_statement.txt file for a clear understanding of what this project is about.
+
 ### An example of how the input and output looks
 
 Test input:
@@ -34,44 +36,32 @@ Explain what these tests test and why
 ```
 
 ## Getting Started
-
-sbt "run any_file_name.txt"<br>
-or<br>
-sbt run<br>
-
+```
+sbt "run any_file_name.txt"
+```
+or just <br>
+```
+sbt run
+```
 ### Prerequisites
 
-What things you need to install the software and how to install them
+* Java 1.7 or above
+* sbt 0.13.16
 
+### Installing sbt on CentOS
+
+Download the SBT rpm package
 ```
-Give examples
+http://dl.bintray.com/sbt/rpm/sbt-0.13.6.rpm
 ```
-
-### Installing
-
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
-
+Run the yum command to install
 ```
-Give the example
+sudo yum install sbt-0.13.6.rpm
 ```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Running the tests
 
 sbt test
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 
