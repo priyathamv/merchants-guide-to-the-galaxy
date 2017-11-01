@@ -1,5 +1,6 @@
 package com.thoughtworks.galaxy
 
+import scala.annotation.tailrec
 import scala.util.control.Breaks._
 
 /**
@@ -127,22 +128,24 @@ object  RomanNumerals {
     val romanNumLength  = romanNumeral.length
     var decimalValue    = 0
 
-    var i = 0
-    breakable {
-      while (i < romanNumLength) {
-        if (i == romanNumLength - 1) {
-          decimalValue += getDecimalValue(romanNumeral(i))
-          i += 1
-        }else if (getDecimalValue(romanNumeral(i)) < getDecimalValue(romanNumeral(i+1))) {
-          decimalValue += getDecimalValue(romanNumeral(i+1)) - getDecimalValue(romanNumeral(i))
-          i += 2
-        }else if (getDecimalValue(romanNumeral(i)) >= getDecimalValue(romanNumeral(i+1))) {
-          decimalValue += getDecimalValue(romanNumeral(i))
-          i += 1
-        }
+    val totalLength = romanNumLength - 1
+    @tailrec
+    def decimalSum(i: Int, finalSum: Int): Int = {
+      i match {
+        case i if i >= romanNumLength =>
+          finalSum
+
+        case i if i == totalLength =>
+          decimalSum(i+1, finalSum + getDecimalValue(romanNumeral(i)))
+
+        case i: Int if getDecimalValue(romanNumeral(i)) < getDecimalValue(romanNumeral(i+1)) =>
+          decimalSum(i+2, finalSum + getDecimalValue(romanNumeral(i+1)) - getDecimalValue(romanNumeral(i)))
+
+        case _: Int if getDecimalValue(romanNumeral(i)) >= getDecimalValue(romanNumeral(i+1)) =>
+          decimalSum(i+1, finalSum + getDecimalValue(romanNumeral(i)))
       }
     }
-    Some(decimalValue)
+    Some(decimalSum(0, 0))
   }
 
 }
